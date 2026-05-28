@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import sandboxRoutes from './routes/sandbox';
+import feedbackRoutes from './routes/feedback';
 
 // Load environment variables
 dotenv.config();
@@ -19,6 +21,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
+
+app.use('/api/sandbox', sandboxRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 // Start the server if not in test environment
 if (process.env.NODE_ENV !== 'test') {

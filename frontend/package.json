@@ -12,27 +12,32 @@
     "format": "prettier --write src/**/*.{ts,tsx}"
   },
   "dependencies": {
+    "html2canvas": "^1.4.1",
+    "lucide-react": "^0.378.0",
+    "mermaid": "^10.9.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "recharts": "^2.12.7",
-    "lucide-react": "^0.378.0",
-    "html2canvas": "^1.4.1",
-    "mermaid": "^10.9.1"
+    "recharts": "^2.12.7"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^15.0.7",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
     "@vitejs/plugin-react": "^4.3.0",
+    "autoprefixer": "^10.5.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "jsdom": "^24.0.0",
+    "postcss": "^8.5.15",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^4.3.0",
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
     "vitest": "^1.6.0",
-    "@testing-library/react": "^15.0.7",
-    "jsdom": "^24.0.0",
-    "eslint": "^8.57.0",
-    "prettier": "^3.2.5",
-    "@typescript-eslint/parser": "^7.8.0",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.2"
+    "vitest-canvas-mock": "^1.1.4"
   }
 }
