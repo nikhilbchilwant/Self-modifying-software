@@ -54,13 +54,13 @@
       "comment": "Fallback to next non-Gemini model when primary is unavailable."
     },
     "rubber_duck": {
-      "primary": "gemini-2.5-pro",
+      "primary": "gemini-3.5-flash",
       "comment": "Rubber Duck must run on a different model family (Gemini) than the active subagent model."
     }
   },
   "rubber_duck_review": {
     "enabled": true,
-    "flow": "Whenever a subagent (development, testing, security-review, documentation) finishes its task, it MUST invoke a rubber-duck subagent with '[MODEL: gemini-2.5-pro]'. The rubber-duck reviews the output against requirements and returns feedback. The subagent must resolve all feedback until rubber-duck returns 'VERIFIED' before submitting back to the orchestrator."
+    "flow": "Whenever a subagent (development, testing, security-review, documentation) finishes its task, it MUST invoke a rubber-duck subagent with '[MODEL: gemini-3.5-flash]'. The rubber-duck reviews the output against requirements and returns feedback. The subagent must resolve all feedback until rubber-duck returns 'VERIFIED' before submitting back to the orchestrator."
   },
   "verification_loop": {
     "enabled": true,
