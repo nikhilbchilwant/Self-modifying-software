@@ -36,14 +36,6 @@
         "read_file",
         "write_file"
       ]
-    },
-    "rubber-duck": {
-      "name": "rubber-duck",
-      "description": "Cross-validates subagent outputs using a different model family.",
-      "tools": [
-        "read_file",
-        "write_file"
-      ]
     }
   },
   "model_routing": {
@@ -52,15 +44,11 @@
       "primary": "claude-3-opus",
       "fallback": "gpt-4o",
       "comment": "Fallback to next non-Gemini model when primary is unavailable."
-    },
-    "rubber_duck": {
-      "primary": "gemini-3.5-flash",
-      "comment": "Rubber Duck must run on a different model family (Gemini) than the active subagent model."
     }
   },
-  "rubber_duck_review": {
+  "orchestrator_review": {
     "enabled": true,
-    "flow": "Whenever a subagent (development, testing, security-review, documentation) finishes its task, it MUST invoke a rubber-duck subagent with '[MODEL: gemini-3.5-flash]'. The rubber-duck reviews the output against requirements and returns feedback. The subagent must resolve all feedback until rubber-duck returns 'VERIFIED' before submitting back to the orchestrator."
+    "flow": "Whenever a subagent completes a task, the Orchestrator (running on Gemini) acts as the critical reviewer. The Orchestrator runs compilation checks, executes the Vitest test suites, validates file structures, and provides direct feedback to the subagent. The subagent must address the orchestrator's feedback iteratively until both agree and all verification steps pass."
   },
   "verification_loop": {
     "enabled": true,

@@ -156,7 +156,7 @@ You **MUST** consider the user input before proceeding (if not empty).
      - Delegate reviewing boundaries, sandbox isolation, and validation security to the `security-review` subagent.
      - Delegate technical writing, Quickstart guides, and doc annotations to the `documentation` subagent.
      - **Model Routing Policy:** Subagents MUST be invoked with the header `[MODEL: claude-3-opus]`. If usage limits or connection issues occur, the orchestrator/harness MUST fall back dynamically to the next non-Gemini model, e.g. `[MODEL: gpt-4o]`.
-     - **Rubber Duck Validation Loop:** Whenever a subagent completes its task, a `rubber-duck` subagent running on a different model family (e.g. `[MODEL: gemini-3.5-flash]`) MUST be invoked to review the subagent's deliverables. The `rubber-duck` cross-verifies output against the plan and spec, and returns critical feedback. The subagent must address the feedback iteratively until the `rubber-duck` outputs `VERIFIED`. Only then is the task marked `[X]` (complete).
+     - **Orchestrator Review Loop:** Whenever a subagent completes a task, the Orchestrator (running on Gemini) acts as the critical reviewer. The Orchestrator MUST run compile/lint tests, verify package setup, and audit output against plan/spec. If any errors or regressions are detected, the Orchestrator feeds logs and feedback to the subagent to resolve. Once both agree and all checks pass, the Orchestrator updates tasks.md to mark the task `[X]` (complete).
 
 7. Implementation execution rules:
    - **Setup first**: Initialize project structure, dependencies, configuration.

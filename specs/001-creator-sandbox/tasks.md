@@ -57,6 +57,8 @@
 - [ ] T007 [US1] Write unit tests for sandbox file-copy and cleanup utilities in backend/tests/sandbox.test.ts
 - [ ] T008 [US1] Write integration tests for UI dynamic imports in frontend/tests/SandboxImport.test.tsx
 - [ ] T008b [US1] Write frontend QA user interaction tests (button clicks, form inputs, theme changes) in frontend/tests/DashboardQA.test.tsx
+- [ ] T008c [US1] Write end-to-end user journey tests (complete session entry, modification hot-reload, feedback visual capture, exit clean-up lifecycle) in frontend/tests/SandboxE2E.test.tsx
+- [ ] T008d [US1] Write smoke tests verifying sandbox routes and endpoints accessibility and quick response in backend/tests/smoke.test.ts
 
 ### Implementation for User Story 1
 
