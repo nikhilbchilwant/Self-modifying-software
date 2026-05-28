@@ -25,9 +25,9 @@
 **Purpose**: Project initialization and basic structure
 
 - [x] T001 Initialize the backend project with TypeScript and Pi SDK dependencies in backend/package.json
-- [ ] T002 Initialize the frontend project with React and Vite in frontend/package.json
-- [ ] T003 [P] Configure Vitest testing environments in backend/package.json and frontend/package.json
-- [ ] T004 [P] Configure ESLint and Prettier for static analysis in backend/package.json and frontend/package.json
+- [X] T002 Initialize the frontend project with React and Vite in frontend/package.json
+- [X] T003 [P] Configure Vitest testing environments in backend/package.json and frontend/package.json
+- [X] T004 [P] Configure ESLint and Prettier for static analysis in backend/package.json and frontend/package.json
 
 ---
 
@@ -37,8 +37,8 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 Setup Express routing middleware, environment config, and base server structure in backend/src/index.ts
-- [ ] T006 Setup proxy settings and root application mount points in frontend/vite.config.ts and frontend/src/main.tsx
+- [X] T005 Setup Express routing middleware, environment config, and base server structure in backend/src/index.ts
+- [X] T006 Setup proxy settings and root application mount points in frontend/vite.config.ts and frontend/src/main.tsx
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 

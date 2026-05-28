@@ -1,0 +1,7 @@
+node_modules/
+dist/
+build/
+coverage/
+*.min.js
+.specify/feedback/
+frontend/src/components/*.sandbox.tsx
