@@ -155,6 +155,7 @@ You **MUST** consider the user input before proceeding (if not empty).
      - Delegate writing and running Vitest tests to the `testing` subagent.
      - Delegate reviewing boundaries, sandbox isolation, and validation security to the `security-review` subagent.
      - Delegate technical writing, Quickstart guides, and doc annotations to the `documentation` subagent.
+     - **Dynamic Model Routing Rule:** To optimize runtime efficiency, the orchestrator MUST prepend all subagent prompts with the header `[MODEL: yolo]` (or the configured `subagent_yolo_model` name like `[MODEL: gemini-3.5-flash]`). The routing system will parse this metadata to run the subagent on the yolo model, ensuring no subagent executes on the same model as the orchestrator.
 
 7. Implementation execution rules:
    - **Setup first**: Initialize project structure, dependencies, configuration.

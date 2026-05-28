@@ -5,23 +5,44 @@
     "development": {
       "name": "development",
       "description": "Expert developer for writing React (TypeScript) dashboard components and Node/Express backend endpoints.",
-      "tools": ["read_file", "write_file", "replace_file_content", "multi_replace_file_content", "run_command"]
+      "tools": [
+        "read_file",
+        "write_file",
+        "replace_file_content",
+        "multi_replace_file_content",
+        "run_command"
+      ]
     },
     "testing": {
       "name": "testing",
       "description": "QA and Vitest test suite manager. Enforces TDD Red-Green loop.",
-      "tools": ["read_file", "write_file", "run_command"]
+      "tools": [
+        "read_file",
+        "write_file",
+        "run_command"
+      ]
     },
     "security-review": {
       "name": "security-review",
       "description": "Validates boundary isolation rules, file sanitization, and secure endpoints.",
-      "tools": ["read_file"]
+      "tools": [
+        "read_file"
+      ]
     },
     "documentation": {
       "name": "documentation",
       "description": "Manages documentation, API contracts, annotations, and clean comments.",
-      "tools": ["read_file", "write_file"]
+      "tools": [
+        "read_file",
+        "write_file"
+      ]
     }
+  },
+  "model_routing": {
+    "orchestrator_model": "gemini-3.5-pro",
+    "subagent_yolo_model": "gemini-3.5-flash",
+    "policy": "DYNAMIC_EXCLUSIVE",
+    "rule": "The orchestrator MUST prefix all subagent prompts with the header '[MODEL: yolo]' or '[MODEL: gemini-3.5-flash]' when calling invoke_subagent. The runtime router will parse this header to execute the subagent on the yolo model, ensuring no subagent runs on the same model as the orchestrator."
   },
   "verification_loop": {
     "enabled": true,
