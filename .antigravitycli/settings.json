@@ -36,13 +36,31 @@
         "read_file",
         "write_file"
       ]
+    },
+    "rubber-duck": {
+      "name": "rubber-duck",
+      "description": "Cross-validates subagent outputs using a different model family.",
+      "tools": [
+        "read_file",
+        "write_file"
+      ]
     }
   },
   "model_routing": {
     "orchestrator_model": "gemini-3.5-pro",
-    "subagent_yolo_model": "gemini-3.5-flash",
-    "policy": "DYNAMIC_EXCLUSIVE",
-    "rule": "The orchestrator MUST prefix all subagent prompts with the header '[MODEL: yolo]' or '[MODEL: gemini-3.5-flash]' when calling invoke_subagent. The runtime router will parse this header to execute the subagent on the yolo model, ensuring no subagent runs on the same model as the orchestrator."
+    "subagents": {
+      "primary": "claude-3-opus",
+      "fallback": "gpt-4o",
+      "comment": "Fallback to next non-Gemini model when primary is unavailable."
+    },
+    "rubber_duck": {
+      "primary": "gemini-2.5-pro",
+      "comment": "Rubber Duck must run on a different model family (Gemini) than the active subagent model."
+    }
+  },
+  "rubber_duck_review": {
+    "enabled": true,
+    "flow": "Whenever a subagent (development, testing, security-review, documentation) finishes its task, it MUST invoke a rubber-duck subagent with '[MODEL: gemini-2.5-pro]'. The rubber-duck reviews the output against requirements and returns feedback. The subagent must resolve all feedback until rubber-duck returns 'VERIFIED' before submitting back to the orchestrator."
   },
   "verification_loop": {
     "enabled": true,
