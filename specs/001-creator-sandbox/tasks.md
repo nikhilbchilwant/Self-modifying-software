@@ -24,7 +24,7 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Initialize the backend project with TypeScript and Pi SDK dependencies in backend/package.json
+- [x] T001 Initialize the backend project with TypeScript and Pi SDK dependencies in backend/package.json
 - [ ] T002 Initialize the frontend project with React and Vite in frontend/package.json
 - [ ] T003 [P] Configure Vitest testing environments in backend/package.json and frontend/package.json
 - [ ] T004 [P] Configure ESLint and Prettier for static analysis in backend/package.json and frontend/package.json
