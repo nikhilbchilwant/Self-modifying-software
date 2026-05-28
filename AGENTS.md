@@ -1,4 +1,5 @@
+# Agent Context
+
 <!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+- Feature Plan: [specs/001-creator-sandbox/plan.md](file:///C:/Users/Nikhil/workspace/SelfEvolvingSoftware/specs/001-creator-sandbox/plan.md)
 <!-- SPECKIT END -->
