@@ -150,20 +150,26 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Follow TDD approach**: Execute test tasks before their corresponding implementation tasks
    - **File-based coordination**: Tasks affecting the same files must run sequentially
    - **Validation checkpoints**: Verify each phase completion before proceeding
+   - **Subagent Delegation**:
+     - Delegate core code writing and feature development to the `development` subagent.
+     - Delegate writing and running Vitest tests to the `testing` subagent.
+     - Delegate reviewing boundaries, sandbox isolation, and validation security to the `security-review` subagent.
+     - Delegate technical writing, Quickstart guides, and doc annotations to the `documentation` subagent.
 
 7. Implementation execution rules:
-   - **Setup first**: Initialize project structure, dependencies, configuration
-   - **Tests before code**: If you need to write tests for contracts, entities, and integration scenarios
-   - **Core development**: Implement models, services, CLI commands, endpoints
-   - **Integration work**: Database connections, middleware, logging, external services
-   - **Polish and validation**: Unit tests, performance optimization, documentation
+   - **Setup first**: Initialize project structure, dependencies, configuration.
+   - **Tests before code**: If you need to write tests for contracts, entities, and integration scenarios.
+   - **Core development**: Implement models, services, CLI commands, endpoints.
+   - **QA Verification & Loop**: During development of any UI element or interactive logic (e.g., a button or dial), the developer MUST verify by performing the action (simulating/clicking the button), observing the frontend behavior, checking both client and server log outputs. If any compilation warning, crash, or unexpected behavior is detected, the agent MUST proactively fix it and re-evaluate. Loop this verification until the element works correctly without regressions.
+   - **Integration work**: Database connections, middleware, logging, external services.
+   - **Polish and validation**: Unit tests, performance optimization, documentation.
 
 8. Progress tracking and error handling:
-   - Report progress after each completed task
-   - Halt execution if any non-parallel task fails
-   - For parallel tasks [P], continue with successful tasks, report failed ones
-   - Provide clear error messages with context for debugging
-   - Suggest next steps if implementation cannot proceed
+   - Report progress after each completed task.
+   - Halt execution if any non-parallel task fails.
+   - For parallel tasks [P], continue with successful tasks, report failed ones.
+   - Provide clear error messages with context for debugging.
+   - Suggest next steps if implementation cannot proceed.
    - **IMPORTANT** For completed tasks, make sure to mark the task off as [X] in the tasks file.
 
 9. Completion validation:

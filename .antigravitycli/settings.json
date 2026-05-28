@@ -1,0 +1,36 @@
+{
+  "project_name": "creator-sandbox-demo",
+  "agent_framework": "antigravity-cli",
+  "subagents": {
+    "development": {
+      "name": "development",
+      "description": "Expert developer for writing React (TypeScript) dashboard components and Node/Express backend endpoints.",
+      "tools": ["read_file", "write_file", "replace_file_content", "multi_replace_file_content", "run_command"]
+    },
+    "testing": {
+      "name": "testing",
+      "description": "QA and Vitest test suite manager. Enforces TDD Red-Green loop.",
+      "tools": ["read_file", "write_file", "run_command"]
+    },
+    "security-review": {
+      "name": "security-review",
+      "description": "Validates boundary isolation rules, file sanitization, and secure endpoints.",
+      "tools": ["read_file"]
+    },
+    "documentation": {
+      "name": "documentation",
+      "description": "Manages documentation, API contracts, annotations, and clean comments.",
+      "tools": ["read_file", "write_file"]
+    }
+  },
+  "verification_loop": {
+    "enabled": true,
+    "max_retries": 5,
+    "actions": [
+      "compile_checks",
+      "simulation_clicks",
+      "console_log_auditing",
+      "backend_log_auditing"
+    ]
+  }
+}
