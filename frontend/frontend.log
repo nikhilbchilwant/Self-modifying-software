@@ -1,0 +1,26 @@
+
+> creator-sandbox-frontend@1.0.0 dev
+> vite
+
+
+  VITE v5.4.21  ready in 262 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+12:53:02 PM [vite] warning:
+/app/frontend/src/App.tsx
+20 |  import DefaultDashboard from "./components/Dashboard";
+21 |  const SandboxDashboard = React.lazy(_c = () => {
+22 |    return import("./components/Dashboard.sandbox.tsx?t=" + Date.now());
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+23 |  });
+24 |  _c2 = SandboxDashboard;
+The above dynamic import cannot be analyzed by Vite.
+See https://github.com/rollup/plugins/tree/master/packages/dynamic-import-vars#limitations for supported dynamic import formats. If this is intended to be left as-is, you can use the /* @vite-ignore */ comment inside the import() call to suppress this warning.
+
+  Plugin: vite:import-analysis
+  File: /app/frontend/src/App.tsx
+12:53:03 PM [vite] http proxy error: /api/sandbox/enter
+AggregateError [ECONNREFUSED]:
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
