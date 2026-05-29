@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { saveFeedbackFiles } from '../utils/fileStore';
+import { saveFeedbackFiles, FeedbackDetails } from '../utils/fileStore';
 
 const router = Router();
 
@@ -9,12 +9,13 @@ router.post('/submit', async (req, res) => {
   const requestId = uuidv4();
 
   try {
-    await saveFeedbackFiles(requestId, screenshot, {
+    const details: FeedbackDetails = {
       requestId,
       timestamp: new Date(),
       prompt,
-      diff,
-    });
+      diff
+    };
+    await saveFeedbackFiles(requestId, screenshot, details);
     res.json({ success: true, requestId });
   } catch (error) {
     console.error('Failed to save feedback', error);

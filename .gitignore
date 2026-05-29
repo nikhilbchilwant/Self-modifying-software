@@ -1,7 +1,21 @@
+# Dependencies
 node_modules/
+
+# Production
 dist/
 build/
+
+# Logs
 *.log
+
+# Env
 .env*
+
+# Artifacts
 .specify/feedback/
 verification/
+assets/videos/
+
+# Sandbox temporary files (except the initial placeholder if needed)
+# Since Vite requires it for static analysis, we'll keep the placeholder.
+# But for a real app, we'd probably use a more dynamic loading strategy or a virtual module.

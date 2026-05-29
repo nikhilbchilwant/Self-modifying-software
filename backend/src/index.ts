@@ -13,9 +13,9 @@ const PORT = process.env.PORT || 5000;
 // Enable CORS
 app.use(cors());
 
-// Parse JSON and urlencoded request bodies
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Parse JSON and urlencoded request bodies with larger limit for screenshots
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Base routes / health checks
 app.get('/api/health', (req, res) => {

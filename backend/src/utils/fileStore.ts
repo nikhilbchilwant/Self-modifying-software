@@ -14,17 +14,13 @@ export interface FeedbackDetails {
   diff: string | null;
 }
 
-export async function saveFeedbackFiles(
-  requestId: string,
-  screenshot: string,
-  details: FeedbackDetails
-): Promise<{ screenshotPath: string; detailsPath: string }> {
+export async function saveFeedbackFiles(requestId: string, screenshot: string, details: FeedbackDetails): Promise<{ screenshotPath: string, detailsPath: string }> {
   await fs.mkdir(FEEDBACK_DIR, { recursive: true });
 
   const screenshotPath = path.join(FEEDBACK_DIR, `${requestId}.png`);
   const detailsPath = path.join(FEEDBACK_DIR, `${requestId}.json`);
 
-  const base64Data = screenshot.replace(/^data:image\/png;base64,/, '');
+  const base64Data = screenshot.replace(/^data:image\/png;base64,/, "");
   await fs.writeFile(screenshotPath, base64Data, 'base64');
 
   await fs.writeFile(detailsPath, JSON.stringify(details, null, 2));
