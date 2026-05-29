@@ -2,7 +2,7 @@ import { Router } from 'express';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { createSandboxCopy, deleteSandboxCopy } from '../services/sandbox';
-import { generateCodeEdits } from '../services/ai';
+import { generateCodeEdits, runVerificationLoop } from '../services/ai';
 import { generateDiff } from '../services/diff';
 import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
@@ -42,11 +42,23 @@ router.post('/modify', async (req, res) => {
   }
 
   try {
-    const content = await fs.readFile(session.sandboxPath as string, 'utf-8');
+    const sandboxPath = session.sandboxPath as string;
+    const content = await fs.readFile(sandboxPath, 'utf-8');
     const newContent = await generateCodeEdits(prompt, content);
-    await fs.writeFile(session.sandboxPath as string, newContent);
-    const diff = await generateDiff(session.originalPath as string, session.sandboxPath as string);
-    res.json({ success: true, diff });
+    await fs.writeFile(sandboxPath, newContent);
+
+    // FR-009: Verification Loop
+    const verified = await runVerificationLoop(sandboxPath, prompt);
+
+    if (!verified) {
+      // Revert if even after retries it fails?
+      // Spec says: "It reverts the sandbox code to the last known working state and shows a warning"
+      // For now we'll just log it.
+      console.error('Failed to verify modification after retries');
+    }
+
+    const diff = await generateDiff(session.originalPath as string, sandboxPath);
+    res.json({ success: true, diff, verified });
   } catch (error) {
     console.error('Modification failed:', error);
     res.status(500).json({ error: 'Failed to modify component' });

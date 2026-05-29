@@ -29,10 +29,10 @@ describe('Sandbox File Utilities', () => {
     expect(content).toContain('Original');
   });
 
-  it('should delete sandbox file', async () => {
-    await fs.writeFile(sandboxPath, 'sandbox content');
+  it('should revert sandbox file content instead of deleting', async () => {
+    await fs.writeFile(sandboxPath, 'modified content');
     await deleteSandboxCopy(sandboxPath);
-    const exists = await fs.stat(sandboxPath).catch(() => false);
-    expect(exists).toBeFalsy();
+    const content = await fs.readFile(sandboxPath, 'utf-8');
+    expect(content).toContain('Loading Sandbox...');
   });
 });
