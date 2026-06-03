@@ -54,20 +54,20 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T007 [US1] Write unit tests for sandbox file-copy and cleanup utilities in backend/tests/sandbox.test.ts
-- [ ] T008 [US1] Write integration tests for UI dynamic imports in frontend/tests/SandboxImport.test.tsx
-- [ ] T008b [US1] Write frontend QA user interaction tests (button clicks, form inputs, theme changes) in frontend/tests/DashboardQA.test.tsx
-- [ ] T008c [US1] Write end-to-end user journey tests (complete session entry, modification hot-reload, feedback visual capture, exit clean-up lifecycle) in frontend/tests/SandboxE2E.test.tsx
-- [ ] T008d [US1] Write smoke tests verifying sandbox routes and endpoints accessibility and quick response in backend/tests/smoke.test.ts
+- [X] T007 [US1] Write unit tests for sandbox file-copy and cleanup utilities in backend/tests/sandbox.test.ts
+- [X] T008 [US1] Write integration tests for UI dynamic imports in frontend/tests/SandboxImport.test.tsx
+- [X] T008b [US1] Write frontend QA user interaction tests (button clicks, form inputs, theme changes) in frontend/tests/DashboardQA.test.tsx
+- [X] T008c [US1] Write end-to-end user journey tests (complete session entry, modification hot-reload, feedback visual capture, exit clean-up lifecycle) in frontend/tests/SandboxE2E.test.tsx
+- [X] T008d [US1] Write smoke tests verifying sandbox routes and endpoints accessibility and quick response in backend/tests/smoke.test.ts
 
 ### Implementation for User Story 1
 
-- [ ] T009 [P] [US1] Implement sandbox file utilities to copy and delete Dashboard.sandbox.tsx in backend/src/services/sandbox.ts
-- [ ] T010 [P] [US1] Implement AI modification module integrating Pi SDK for component editing in backend/src/services/ai.ts
-- [ ] T011 [US1] Implement Sandbox session and modification API endpoints in backend/src/routes/sandbox.ts
-- [ ] T012 [P] [US1] Implement core Dashboard component with Recharts widgets and input forms in frontend/src/components/Dashboard.tsx
-- [ ] T013 [US1] Implement App wrapper with dynamic imports switching between production and sandbox files in frontend/src/App.tsx
-- [ ] T014 [US1] Implement SandboxControls sidebar for prompt submission and session toggles in frontend/src/components/SandboxControls.tsx
+- [X] T009 [P] [US1] Implement sandbox file utilities to copy and delete Dashboard.sandbox.tsx in backend/src/services/sandbox.ts
+- [X] T010 [P] [US1] Implement AI modification module integrating Pi SDK for component editing in backend/src/services/ai.ts
+- [X] T011 [US1] Implement Sandbox session and modification API endpoints in backend/src/routes/sandbox.ts
+- [X] T012 [P] [US1] Implement core Dashboard component with Recharts widgets and input forms in frontend/src/components/Dashboard.tsx
+- [X] T013 [US1] Implement App wrapper with dynamic imports switching between production and sandbox files in frontend/src/App.tsx
+- [X] T014 [US1] Implement SandboxControls sidebar for prompt submission and session toggles in frontend/src/components/SandboxControls.tsx
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently.
 
@@ -81,15 +81,15 @@
 
 ### Tests for User Story 2
 
-- [ ] T015 [US2] Write unit tests for the feedback routing endpoint in backend/tests/feedback.test.ts
+- [X] T015 [US2] Write unit tests for the feedback routing endpoint in backend/tests/feedback.test.ts
 
 ### Implementation for User Story 2
 
-- [ ] T016 [P] [US2] Implement local storage file utilities to store feedback files in backend/src/utils/fileStore.ts
-- [ ] T017 [US2] Implement POST endpoint for feedback submission in backend/src/routes/feedback.ts
-- [ ] T018 [P] [US2] Implement html2canvas capture logic in frontend/src/utils/snapshot.ts
-- [ ] T019 [US2] Implement line-by-line diff generation service in backend/src/services/diff.ts
-- [ ] T020 [US2] Integrate snapshot capture and diff payload into feedback submission in frontend/src/components/SandboxControls.tsx
+- [X] T016 [P] [US2] Implement local storage file utilities to store feedback files in backend/src/utils/fileStore.ts
+- [X] T017 [US2] Implement POST endpoint for feedback submission in backend/src/routes/feedback.ts
+- [X] T018 [P] [US2] Implement html2canvas capture logic in frontend/src/utils/snapshot.ts
+- [X] T019 [US2] Implement line-by-line diff generation service in backend/src/services/diff.ts
+- [X] T020 [US2] Integrate snapshot capture and diff payload into feedback submission in frontend/src/components/SandboxControls.tsx
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently.
 
@@ -103,8 +103,8 @@
 
 ### Implementation for User Story 3
 
-- [ ] T021 [US3] Define global styles and Keynote Theme variables in frontend/src/index.css
-- [ ] T022 [US3] Refactor components to conform to Apple Mac Keynote Light styling in frontend/src/components/Dashboard.tsx
+- [X] T021 [US3] Define global styles and Keynote Theme variables in frontend/src/index.css
+- [X] T022 [US3] Refactor components to conform to Apple Mac Keynote Light styling in frontend/src/components/Dashboard.tsx
 
 **Checkpoint**: All user stories should now be independently functional.
 
@@ -114,9 +114,9 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T023 Document verify commands in specs/001-creator-sandbox/quickstart.md
-- [ ] T024 Perform final linting and code formatting checks across all project directories
-- [ ] T025 Execute entire test suite to ensure all unit and integration tests pass successfully
+- [X] T023 Document verify commands in specs/001-creator-sandbox/quickstart.md
+- [X] T024 Perform final linting and code formatting checks across all project directories
+- [X] T025 Execute entire test suite to ensure all unit and integration tests pass successfully
 
 ---
 
