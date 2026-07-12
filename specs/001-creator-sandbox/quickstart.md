@@ -10,7 +10,7 @@ This quickstart guides you through setting up and running the Creator Sandbox we
 ## Installation & Setup
 
 1. **Install Dependencies**:
-   Navigate to the root directory and install dependencies for both the frontend and backend.
+   Navigate to the root directory and install dependencies for both the frontend and backend. The frontend additionally requires `recharts` (charts) and `lucide-react` (icons) per the feature spec.
    ```bash
    # Install root and backend dependencies
    npm install
@@ -59,3 +59,23 @@ This quickstart guides you through setting up and running the Creator Sandbox we
 4. Watch the component hot-reload instantly.
 5. Click **"Submit Feature Request"** to capture a snapshot of the interface and export the generated code diff. The feedback details will be saved to the local folder at `.specify/feedback/`.
 6. Click **"Exit Sandbox Mode"** to return the app back to the stable production layout.
+
+## Verification Commands
+
+Run these to satisfy the testing and performance quality gates (constitution + SC-001/SC-002/SC-004):
+
+```bash
+# Lint + format (all packages)
+npm run lint
+
+# Unit + integration + smoke tests
+npm test
+
+# Focused verification-loop tests (FR-009 / FR-012)
+npm test -- sandbox.ai
+
+# Performance checks (timed): HMR < 1.5s, snapshot < 2s, exit-restore < 1s
+npm run verify:perf
+```
+
+A failing verification loop MUST revert to the last known working sandbox code and surface a frontend warning overlay; it MUST NOT inject unverified code via HMR.

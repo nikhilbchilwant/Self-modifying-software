@@ -23,13 +23,23 @@ The backend exposes the following REST API endpoints to manage the sandbox lifec
       "prompt": "Add a target line at 80% to the analytics chart"
     }
     ```
-*   **Response**:
+*   **Response** (success):
     ```json
     {
       "success": true,
       "diff": "--- src/components/Dashboard.sandbox.tsx\n+++ src/components/Dashboard.sandbox.tsx\n..."
     }
     ```
+*   **Response** (verification failed after bounded retries, FR-012):
+    ```json
+    {
+      "success": false,
+      "verificationStatus": "failed",
+      "message": "Code could not be verified after 3 attempts; reverted to last known working version.",
+      "revertedToLastKnownWorking": true
+    }
+    ```
+    On failure the backend MUST NOT write the failed code and MUST NOT trigger HMR; the frontend shows a warning overlay.
 
 ## 3. Submit Feedback & Screenshot
 *   **Endpoint**: `POST /api/feedback/submit`
@@ -42,6 +52,7 @@ The backend exposes the following REST API endpoints to manage the sandbox lifec
       "diff": "--- src/components/Dashboard.sandbox.tsx\n..."
     }
     ```
+    > `userId` is NOT required: Sandbox Mode is unrestricted, so the backend generates an anonymous, session-scoped identifier or stores `null` (see data-model `FeatureRequest.userId`).
 *   **Response**:
     ```json
     {

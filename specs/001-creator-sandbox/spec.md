@@ -62,8 +62,9 @@ The Sandbox Mode is accessible to all users of the application without restricti
 
 ### Edge Cases
 
-- What happens when the AI generates invalid syntax or compilation errors? The backend verification loop detects it, sends the logs back to Pi, and retries/auto-fixes it.
-- How does the system handle an unresolvable code error in the verification loop? It reverts the sandbox code to the last known working state and shows a warning overlay in the frontend.
+- What happens when the AI generates invalid syntax or compilation errors? The backend verification loop detects it, sends the logs back to Pi, and retries/auto-fixes it within the bounded retry limit (see FR-012).
+- How does the system handle an unresolvable code error in the verification loop? It reverts the sandbox code to the last known working state and shows a warning overlay in the frontend (see FR-012). The failed code is never injected via HMR.
+- What happens to a feature request submitted without an identified user? The system stores the request with an anonymous/session-scoped `user ID` or null (see Feature Request entity definition).
 
 ## Requirements *(mandatory)*
 
@@ -74,17 +75,24 @@ The Sandbox Mode is accessible to all users of the application without restricti
 - **FR-003**: System MUST discard all sandbox registry changes immediately when exiting Sandbox Mode.
 - **FR-004**: System MUST inject dynamic UI and logic modifications into the active DOM without resetting application state (state-preserving hot reloading).
 - **FR-005**: System MUST capture a high-fidelity visual snapshot (PNG format) of the modified workspace when submitting feedback.
-- **FR-006**: System MUST generate a structured code diff representing the changes made during the sandbox session compared to the baseline code.
+- **FR-006**: System MUST generate a structured code diff representing the changes made during the sandbox session compared to the baseline code. The diff MUST be a unified, line-by-line diff (file paths + line numbers) of the sandbox component versus the captured baseline snapshot.
+- **FR-006a**: System MUST capture the baseline snapshot of the production component file at the moment the user enters Sandbox Mode and store it for the session (see FR-008). This baseline is the single source used for every diff and for restore-on-exit.
 - **FR-007**: System MUST save the screenshot and code diff package to a local feedback directory.
 - **FR-008**: System MUST baseline code changes against the initial codebase state at the moment the user entered Sandbox Mode.
-- **FR-009**: AI modifications MUST be compiled and verified by the backend using a feedback loop (errors sent back to AI for auto-fixing) before HMR injection.
+- **FR-009**: AI modifications MUST be compiled and verified by the backend using a feedback loop (errors sent back to AI for auto-fixing) before HMR injection. The system MUST NOT inject any unverified code into the active DOM.
+- **FR-012**: The verification loop MUST attempt a bounded number of auto-fix retries (maximum 3 attempts). If the code remains unverifiable after the retry limit, the system MUST revert the sandbox code to the last known working state, MUST NOT inject the failed code via HMR, and MUST signal the frontend to display a warning overlay describing the failure.
 - **FR-010**: Frontend UI MUST utilize pre-installed `recharts` and `lucide-react` libraries for visualization and layout.
-- **FR-011**: The dashboard theme MUST strictly align with the Apple Mac Keynote light theme (sleek, minimalist off-white/gray canvas, charcoal/dark-gray text, crisp thin borders, and clean primary accents).
+- **FR-011**: The dashboard theme MUST strictly align with the Apple Mac Keynote light theme. Measurable theme tokens (exposed as CSS variables in `frontend/src/index.css`):
+  - Canvas/background: `#F5F5F7` (off-white/gray).
+  - Primary text: `#1D1D1F` (charcoal/dark-gray).
+  - Borders: `1px solid #D2D2D7` (thin, light gray).
+  - Primary accent: a single restrained accent (e.g., `#0071E3`) used sparingly.
+  - Typography: system font stack, minimal shadows, generous whitespace (no heavy gradients or drop shadows).
 
 ### Key Entities *(include if feature involves data)*
 
 - **Sandbox Session**: Represents the active experimental session, including session ID, start time, temporary registry of modifications, and status (Active, Exited).
-- **Feature Request**: The feedback submission containing a unique request ID, timestamp, user ID, screenshot artifact (PNG), code diff artifact, and optional user description.
+- **Feature Request**: The feedback submission containing a unique request ID, timestamp, user ID, screenshot artifact (PNG), code diff artifact, and optional user description. The `user ID` is NOT an authenticated identity: Sandbox Mode is unrestricted, so the system MUST generate an anonymous, session-scoped identifier (e.g., derived from `sessionId`) or leave it null when no identity context exists.
 
 ## Success Criteria *(mandatory)*
 

@@ -28,6 +28,7 @@
 - [X] T002 Initialize the frontend project with React and Vite in frontend/package.json
 - [X] T003 [P] Configure Vitest testing environments in backend/package.json and frontend/package.json
 - [X] T004 [P] Configure ESLint and Prettier for static analysis in backend/package.json and frontend/package.json
+- [ ] T031 [P] Add `recharts` and `lucide-react` to frontend/package.json dependencies (required by FR-010).
 
 ---
 
@@ -57,13 +58,16 @@
 - [X] T007 [US1] Write unit tests for sandbox file-copy and cleanup utilities in backend/tests/sandbox.test.ts
 - [X] T008 [US1] Write integration tests for UI dynamic imports in frontend/tests/SandboxImport.test.tsx
 - [X] T008b [US1] Write frontend QA user interaction tests (button clicks, form inputs, theme changes) in frontend/tests/DashboardQA.test.tsx
-- [X] T008c [US1] Write end-to-end user journey tests (complete session entry, modification hot-reload, feedback visual capture, exit clean-up lifecycle) in frontend/tests/SandboxE2E.test.tsx
+- [X] T008c [US1] Write end-to-end user journey tests (complete session entry, modification hot-reload, exit clean-up lifecycle) in frontend/tests/SandboxE2E.test.tsx
 - [X] T008d [US1] Write smoke tests verifying sandbox routes and endpoints accessibility and quick response in backend/tests/smoke.test.ts
+- [ ] T027 [US1] Write unit tests for the AI verification loop (retry on compile error, revert to last known working version on exhaustion, failure signaling) in backend/tests/ai.verify.test.ts
 
 ### Implementation for User Story 1
 
 - [X] T009 [P] [US1] Implement sandbox file utilities to copy and delete Dashboard.sandbox.tsx in backend/src/services/sandbox.ts
+- [ ] T032 [US1] Capture baseline snapshot of the production component at session entry into `SandboxSession.baselineSnapshot` in backend/src/services/sandbox.ts (FR-006a/FR-008), used for diff generation and restore-on-exit.
 - [X] T010 [P] [US1] Implement AI modification module integrating Pi SDK for component editing in backend/src/services/ai.ts
+- [ ] T026 [P] [US1] Implement bounded AI verification loop in backend/src/services/ai.ts: compile/type-check the sandbox component, feed errors back to Pi SDK, retry up to 3 attempts (FR-009/FR-012); on exhaustion revert to `lastKnownWorkingVersion`, return `verificationStatus: failed`, and MUST NOT trigger HMR.
 - [X] T011 [US1] Implement Sandbox session and modification API endpoints in backend/src/routes/sandbox.ts
 - [X] T012 [P] [US1] Implement core Dashboard component with Recharts widgets and input forms in frontend/src/components/Dashboard.tsx
 - [X] T013 [US1] Implement App wrapper with dynamic imports switching between production and sandbox files in frontend/src/App.tsx
@@ -82,6 +86,7 @@
 ### Tests for User Story 2
 
 - [X] T015 [US2] Write unit tests for the feedback routing endpoint in backend/tests/feedback.test.ts
+- [ ] T029 [US2] Write integration and smoke tests for feedback submission: verify PNG + JSON diff package are generated and saved under `.specify/feedback/` (backend/tests/feedback.integration.test.ts, frontend/tests/FeedbackFlow.test.tsx).
 
 ### Implementation for User Story 2
 
@@ -101,6 +106,10 @@
 
 **Independent Test**: Verify dashboard layout style matches Keynote Light and the entry controls are visible and usable.
 
+### Tests for User Story 3
+
+- [ ] T028 [US3] Write theme/visual-consistency tests asserting Apple Mac Keynote light tokens via CSS variables (background `#F5F5F7`, text `#1D1D1F`, borders `1px solid #D2D2D7`, restrained accent) in frontend/tests/Theme.test.tsx
+
 ### Implementation for User Story 3
 
 - [X] T021 [US3] Define global styles and Keynote Theme variables in frontend/src/index.css
@@ -117,6 +126,7 @@
 - [X] T023 Document verify commands in specs/001-creator-sandbox/quickstart.md
 - [X] T024 Perform final linting and code formatting checks across all project directories
 - [X] T025 Execute entire test suite to ensure all unit and integration tests pass successfully
+- [ ] T030 [P] Add timed performance verification covering SC-001 (HMR < 1.5s), SC-002 (snapshot < 2s capturing 100% visible DOM), and SC-004 (exit-restore < 1s) via an `npm run verify:perf` script and tests in backend/tests/perf.test.ts and frontend/tests/Perf.test.tsx.
 
 ---
 
@@ -149,6 +159,7 @@
 - Setup tasks T003 and T004 can run in parallel.
 - Sandbox utilities T009 and AI module T010 can be developed in parallel with Dashboard UI T012.
 - Local storage utilities T016 and client snapshot capture T018 can be developed in parallel.
+- Verification-loop task T026 and baseline-capture task T032 can run alongside Dashboard UI T012.
 
 ---
 

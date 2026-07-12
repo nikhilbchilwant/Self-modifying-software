@@ -12,7 +12,7 @@ Build a local demo application that shows a mock SaaS Analytics Dashboard with a
 
 **Language/Version**: Node.js (TypeScript v5.x), React (TypeScript v18.x)
 
-**Primary Dependencies**: `express`, `vite`, `react`, `react-dom`, `@earendil-works/pi-ai`, `@earendil-works/pi-agent-core`, `html2canvas`, `diff` (for generating visual diffs)
+**Primary Dependencies**: `express`, `vite`, `react`, `react-dom`, `@earendil-works/pi-ai`, `@earendil-works/pi-agent-core`, `html2canvas`, `diff` (for generating visual diffs), `recharts` (charts), `lucide-react` (icons)
 
 **Storage**: Local file system (feedback stored in `.specify/feedback/` as JSON and PNG screenshots)
 
@@ -27,7 +27,7 @@ Build a local demo application that shows a mock SaaS Analytics Dashboard with a
 - Snapshot capture and storage under 2 seconds
 
 **Constraints**:
-- Absolute sandbox isolation: writes are strictly restricted to `*.sandbox.tsx` files.
+- Absolute sandbox isolation: AI-generated **code** writes are strictly restricted to `*.sandbox.tsx` files. This does NOT forbid writing feedback artifacts; generated **feedback artifacts** (PNG screenshots and JSON diff/metadata) are explicitly permitted to be written under `.specify/feedback/`.
 - Zero downtime: State-preserving reloading (HMR).
 
 ## Constitution Check
@@ -35,7 +35,7 @@ Build a local demo application that shows a mock SaaS Analytics Dashboard with a
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 - **Code Quality**: Adhere to strict TypeScript types. Keep component modification functions side-effect free.
-- **Testing Standards**: Establish Vitest unit tests for HMR file-swap mechanics and Express endpoints.
+- **Testing Standards**: Establish Vitest unit tests for HMR file-swap mechanics and Express endpoints. Additionally, every user story MUST have integration tests and smoke tests per the constitution: US2 MUST add feedback integration/smoke tests; US3 MUST add theme/accessibility/visual-consistency tests; the verification loop (FR-009/FR-012) MUST have backend unit tests covering compile-failure retry, revert-on-failure, and warning signaling. Performance baselines (SC-001, SC-002, SC-004) MUST be validated by a timed test/measurement task (see tasks T-Perf-*).
 - **User Experience Consistency**: Use CSS variables for dashboard theme consistency; when modifying the dashboard, the Sandbox Mode frame keeps consistent control UI.
 - **Performance Requirements**: Fast response for AI modifications; keep file swaps efficient.
 
@@ -79,6 +79,18 @@ frontend/
 ```
 
 **Structure Decision**: Option 2 (Web application with separate backend/ and frontend/ folders).
+
+## Verification Loop & Failure Handling
+
+To satisfy FR-009 and FR-012, the backend `ai.ts` service implements a bounded verification loop:
+
+1. Generate candidate component code from the prompt.
+2. Compile/type-check the sandbox component (e.g., `tsc --noEmit` / Vite build check) and run lint.
+3. If errors: feed error logs back to Pi SDK and retry (max 3 attempts).
+4. If still failing after retries: revert `Dashboard.sandbox.tsx` to the last known working version, do NOT notify HMR, and return a `verificationFailed` result so the frontend shows a warning overlay.
+5. Only on success: write verified code; Vite HMR pushes the update (state preserved).
+
+At session entry (`POST /api/sandbox/enter`), the system captures a baseline snapshot of the production component file (FR-006a/FR-008) used for all diffs and for restore-on-exit.
 
 ## Complexity Tracking
 
