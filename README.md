@@ -1,5 +1,7 @@
 # SelfEvolvingSoftware
 
+### Note: This project was completely vibe coded
+
 ## Why this project exists
 
 This project demonstrates a simple but important idea: **AI can now enable software to modify part of itself safely, as long as the loop is sandboxed, verifiable, and easy to inspect**.
