@@ -1,122 +1,32 @@
-# Creator Sandbox & Feature Request Demo
+# SelfEvolvingSoftware
 
-This repository contains a full-stack implementation of the **Creator Sandbox** and feature request flow. It allows developers and creators to toggle into a sandbox environment, preview and interact with compiler-checked AI modifications to the UI, capture baseline and modified visual diffs along with screenshots, and submit developer feedback directly to the codebase.
+## Why this project exists
 
----
+This project demonstrates a simple but important idea: **AI can now enable software to modify part of itself safely, as long as the loop is sandboxed, verifiable, and easy to inspect**.
 
-## 🛠️ Technology Stack
+The demo is intentionally narrow. It does not let AI rewrite the whole system. Instead, it lets a user modify a single React dashboard component in a controlled sandbox, see the result live, capture the outcome as a screenshot and code diff, and then discard the change.
 
-- **Frontend**: React (v18), Vite, Recharts, Lucide Icons, and `html2canvas` (for client-side screenshot generation).
-- **Backend**: Node.js, Express, ESM (`"type": "module"`), TypeScript (compiles with `tsx`), and `@earendil-works/pi-ai` (Unified LLM SDK).
-- **Testing**: Vitest + JSDOM.
+In this repo, the production dashboard lives at `frontend/src/components/Dashboard.tsx`. Sandbox mode creates a temporary copy at `frontend/src/components/Dashboard.sandbox.tsx`. Prompts are sent to an Express/TypeScript backend, which uses Pi AI (`@earendil-works/pi-ai`) to generate updated TSX. If the generated component passes verification, the sandbox file is updated and the browser reflects the change immediately. If it does not, the change is rejected or reverted. Feedback is stored locally under `.specify/feedback/` as PNG and JSON artifacts.
 
----
+## Architecture at a glance
 
-## 🚀 Getting Started
+- **Frontend** — React + Vite (`frontend/src/App.tsx`)
+  - switches between the production dashboard and the sandbox dashboard
+  - preserves surrounding application state while Vite hot-swaps the module
+- **Sandbox API** — Express routes (`backend/src/routes/sandbox.ts`)
+  - enters sandbox mode
+  - applies prompt-driven modifications
+  - exits and cleans up the sandbox file
+- **AI integration** — Pi AI service (`backend/src/services/ai.ts`)
+  - sends the current TSX plus the user prompt to the configured model
+  - extracts code from the model response
+- **Verification** — TypeScript compiler check (`backend/src/utils/compiler.ts`)
+  - validates generated code before the sandbox change is kept
+- **Feedback capture** — screenshot + diff
+  - screenshot from `frontend/src/utils/snapshot.ts` via `html2canvas`
+  - unified diff generated in `backend/src/services/diff.ts`
+  - artifacts persisted by `backend/src/utils/fileStore.ts`
 
-### 1. Installation
-Run npm installs in both the backend and frontend directories:
+## Quickstart
 
-```bash
-# Install backend dependencies
-cd backend
-npm install
-
-# Install frontend dependencies
-cd ../frontend
-npm install
-```
-
-### 2. Configure AI Credentials
-Copy the backend environment template and set your OpenRouter key:
-
-```bash
-cd backend
-cp .env.example .env
-# Edit .env and set OPENROUTER_API_KEY=your_openrouter_api_key_here
-```
-
-The demo defaults to `PI_AI_PROVIDER=openrouter` and `PI_AI_MODEL=tencent/hy3:free`.
-
-### 3. Running the Servers
-Start both servers in development mode:
-
-```bash
-# Start backend watcher server (Port 5000)
-cd backend
-npm run dev
-
-# Start frontend development server (Port 5174 / 5173)
-cd ../frontend
-npm run dev
-```
-
-The frontend uses Vite's reverse proxy to route `/api` calls directly to the Express backend at `http://localhost:5000`.
-
----
-
-## 🧪 Testing and QA
-
-The project includes unit, integration, and E2E validation scripts.
-
-### Running Backend Tests
-Runs 10/10 Vitest tests checking sandbox state, smoke paths, compiler validation, and feedback collection:
-```bash
-cd backend
-npm run test
-```
-
-### Running Frontend Tests
-Runs 8/8 Vitest tests checking React layout, sandbox triggers, error boundaries, and dynamic variable-based lazy loading:
-```bash
-cd frontend
-npm run test
-```
-
-### Running E2E Verification Script
-Runs a dedicated programmatic manual QA E2E lifecycle (spins up a separate mock server, acts as the client, writes and compiles the files, and checks files on disk):
-```bash
-cd backend
-npx tsx C:\Users\Nikhil\.gemini\antigravity-cli\brain\6efa737d-b5de-4176-8637-53bed4cf3dfe\scratch\qa_verify.mts
-```
-
----
-
-## 🧠 Pi AI Integration
-
-The backend connects to `@earendil-works/pi-ai` and defaults to OpenRouter using `tencent/hy3:free`. Provider, model, and API key are configured through `backend/.env` (copy `backend/.env.example` first).
-
-### Live AI Connection Required
-All sandbox modifications depend on a live LLM call. Configure `OPENROUTER_API_KEY` in `backend/.env` before running the sandbox. You can override `PI_AI_PROVIDER` and `PI_AI_MODEL` for another provider/model if needed; keep real keys out of git.
-
----
-
-## 📂 Project Architecture
-
-```
-├── backend/
-│   ├── src/
-│   │   ├── routes/
-│   │   │   ├── sandbox.ts        # Enter, exit, modify routes
-│   │   │   └── feedback.ts       # Feedback ingestion route
-│   │   ├── services/
-│   │   │   ├── sandbox.ts        # Creation and deletion files
-│   │   │   └── ai.ts             # LLM SDK integration (requires live provider)
-│   │   └── utils/
-│   │       ├── compiler.ts       # Live ts.createProgram compiler validation
-│   │       └── fileStore.ts      # Writes diffs and png screenshots to disk
-│   └── tests/                    # Vitest server tests
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Dashboard.tsx     # Apple Keynote Light theme SaaS dashboard
-│   │   │   └── SandboxControls.ts# Sidebar instructions and feedback submitter
-│   │   ├── utils/
-│   │   │   └── snapshot.ts       # html2canvas and visual diff calculations
-│   │   ├── App.tsx               # Main container with error bounds & lazy imports
-│   │   └── index.css             # Root styles and global tokens
-│   └── src/test/                 # Vitest component and render tests
-│
-└── .specify/feedback/            # Location of submitted screenshots and diffs
-```
+For setup and local execution, see [specs/001-creator-sandbox/quickstart.md](specs/001-creator-sandbox/quickstart.md).
