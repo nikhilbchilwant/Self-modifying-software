@@ -1,6 +1,6 @@
 import React, { useState, useMemo, Suspense, lazy } from 'react';
 import SandboxControls from './components/SandboxControls';
-import { captureScreenshot, calculateDiff, sendFeedback, exitSandbox } from './utils/snapshot';
+import { captureScreenshot, sendFeedback, exitSandbox } from './utils/snapshot';
 import { Sparkles } from 'lucide-react';
 
 // Error Boundary for Sandbox runtime errors
@@ -78,39 +78,19 @@ export default function App() {
     }
   };
 
-  // Submit visual diff and screenshot feedback
+  // Submit visual diff and screenshot feedback.
+  // Diff is computed server-side — client only captures the screenshot.
   const handleSubmitFeedback = async () => {
     if (!sessionId) return;
     try {
-      // 1. Capture base64 screenshot via html2canvas
+      // Capture base64 screenshot via html2canvas
       const screenshot = await captureScreenshot('.dashboard-container');
 
-      // 2. Fetch original and modified source codes to calculate diff
-      let originalCode = '';
-      let modifiedCode = '';
-      
-      try {
-        const origRes = await fetch('/src/components/Dashboard.tsx');
-        originalCode = await origRes.text();
-      } catch (e) {
-        originalCode = '// Failed to fetch original code';
-      }
-
-      try {
-        const modRes = await fetch('/src/components/Dashboard.sandbox.tsx');
-        modifiedCode = await modRes.text();
-      } catch (e) {
-        modifiedCode = '// Failed to fetch sandbox code';
-      }
-
-      const diffContent = calculateDiff(originalCode, modifiedCode);
-
-      // 3. Send feedback to backend
+      // Send to backend; server reads both files and generates the diff
       const result = await sendFeedback(
         sessionId,
         'Sandbox session modification feedback',
-        screenshot,
-        diffContent
+        screenshot
       );
 
       if (result.success) {

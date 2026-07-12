@@ -5,7 +5,7 @@ This quickstart guides you through setting up and running the Creator Sandbox we
 ## Prerequisites
 - Node.js (version 18 or higher recommended)
 - `npm` or `yarn` package manager
-- Configured Codex subscription or API keys in the environment for the Pi SDK provider framework
+- OpenRouter API key for the Pi SDK provider framework
 
 ## Installation & Setup
 
@@ -22,11 +22,15 @@ This quickstart guides you through setting up and running the Creator Sandbox we
    ```
 
 2. **Configure Environment**:
-   Ensure that the Pi SDK credentials (such as Codex tokens or API configurations) are set as environment variables.
+   Copy the backend example env file and add your OpenRouter key.
    ```bash
-   # Example setup for Codex/Pi SDK
-   export PI_AI_PROVIDER="codex"
-   export CODEX_API_KEY="your_api_key_here"
+   cd backend
+   cp .env.example .env
+   # Edit .env and set:
+   # PI_AI_PROVIDER=openrouter
+   # PI_AI_MODEL=tencent/hy3:free
+   # OPENROUTER_API_KEY=your_openrouter_api_key_here
+   cd ..
    ```
 
 ## Running the Application
@@ -34,7 +38,8 @@ This quickstart guides you through setting up and running the Creator Sandbox we
 1. **Start the Backend Service**:
    Run the Express server in development mode.
    ```bash
-   npm run dev:backend
+   cd backend
+   npm run dev
    ```
    The backend server runs at `http://localhost:5000`.
 

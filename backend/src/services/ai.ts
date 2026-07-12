@@ -1,13 +1,91 @@
-import { getModel, complete } from '@earendil-works/pi-ai';
+import { getModel, complete, type Api, type Model } from '@earendil-works/pi-ai';
+
+const DEFAULT_AI_PROVIDER = 'openrouter';
+const DEFAULT_AI_MODEL = 'tencent/hy3:free';
+const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
+const OPENROUTER_FREE_SUFFIX = ':free';
+
+// ---------------------------------------------------------------------------
+// AI provider and model are configured entirely via environment variables.
+// Set these in backend/.env (copy backend/.env.example as a starting point).
+//
+//   PI_AI_PROVIDER  — provider name (defaults to "openrouter")
+//   PI_AI_MODEL     — model ID (defaults to "tencent/hy3:free")
+//
+// The Pi SDK reads the matching API key automatically from a provider-specific
+// env var. For OpenRouter, set OPENROUTER_API_KEY in backend/.env.
+// ---------------------------------------------------------------------------
+
+type ModelLookup = (provider: string, modelId: string) => Model<Api> | undefined;
+
+function getRegisteredModel(provider: string, modelId: string): Model<Api> | undefined {
+  try {
+    const lookupModel = getModel as unknown as ModelLookup;
+    return lookupModel(provider, modelId);
+  } catch {
+    return undefined;
+  }
+}
+
+function createOpenRouterModel(modelId: string): Model<'openai-completions'> {
+  return {
+    id: modelId,
+    name: modelId,
+    api: 'openai-completions',
+    provider: 'openrouter',
+    baseUrl: OPENROUTER_BASE_URL,
+    reasoning: false,
+    input: ['text'],
+    cost: {
+      input: 0,
+      output: 0,
+      cacheRead: 0,
+      cacheWrite: 0,
+    },
+    contextWindow: 128000,
+    maxTokens: 8192,
+  };
+}
+
+function resolveConfiguredModel(provider: string, modelId: string): Model<Api> {
+  const exactModel = getRegisteredModel(provider, modelId);
+  if (exactModel) {
+    return exactModel;
+  }
+
+  if (provider === 'openrouter') {
+    const baseModelId = modelId.endsWith(OPENROUTER_FREE_SUFFIX)
+      ? modelId.slice(0, -OPENROUTER_FREE_SUFFIX.length)
+      : modelId;
+    const baseModel = baseModelId !== modelId ? getRegisteredModel(provider, baseModelId) : undefined;
+
+    if (baseModel) {
+      return {
+        ...baseModel,
+        id: modelId,
+        name: `${baseModel.name} (${modelId})`,
+      };
+    }
+
+    // OpenRouter can expose model IDs before this package's generated registry
+    // is updated, so keep the exact configured ID and use the OpenAI-compatible API.
+    return createOpenRouterModel(modelId);
+  }
+
+  throw new Error(
+    `Unknown AI model "${modelId}" for provider "${provider}". ` +
+      'Check PI_AI_PROVIDER and PI_AI_MODEL in backend/.env.'
+  );
+}
 
 export async function modifyComponent(
   componentCode: string,
   userPrompt: string,
   verificationError?: string
 ): Promise<string> {
-  const provider = (process.env.PI_AI_PROVIDER || 'google') as any;
-  const modelId = (process.env.PI_AI_MODEL || 'gemini-flash-latest') as any;
-  
+  const provider = process.env.PI_AI_PROVIDER?.trim() || DEFAULT_AI_PROVIDER;
+  const modelId = process.env.PI_AI_MODEL?.trim() || DEFAULT_AI_MODEL;
+
   const systemPrompt = `You are an expert React and TypeScript developer. Your job is to modify the provided TSX component code based on the user's prompt.
 You must output ONLY the updated code inside a single \`tsx\` markdown code block, and NO other explanation or commentary.
 Your code must compile successfully, use valid TypeScript, and not have any syntax or import errors. Use standard Recharts and Lucide React elements if required.`;
@@ -37,9 +115,9 @@ ${userPrompt}`;
   };
 
   try {
-    const model = getModel(provider, modelId);
+    const model = resolveConfiguredModel(provider, modelId);
     const response = await complete(model, context);
-    
+
     // Extract text content from response
     let responseText = '';
     for (const part of response.content) {
@@ -65,111 +143,13 @@ ${userPrompt}`;
     }
 
     return code;
-  } catch (err: any) {
-    console.warn('AI call failed or credentials missing, applying fallback modification:', err.message || err);
-
-    let modified = componentCode;
-    let modifiedVisually = false;
-    const lowerPrompt = userPrompt.toLowerCase();
-
-    // 1. Language modification (Spanish, French)
-    if (lowerPrompt.includes('language') || lowerPrompt.includes('spanish') || lowerPrompt.includes('espanol') || lowerPrompt.includes('español')) {
-      modified = modified.replace(
-        /Analytics Dashboard/g,
-        'Panel de Control de Análisis'
-      );
-      modified = modified.replace(
-        /Real-time SaaS Performance Overview/g,
-        'Información General del Rendimiento SaaS en Tiempo Real'
-      );
-      modified = modified.replace(
-        /Target Monthly Goal \(\$\):/g,
-        'Meta Mensual Objetivo ($):'
-      );
-      modified = modified.replace(
-        /Monthly Recurring Revenue/g,
-        'Ingresos Mensuales Recurrentes'
-      );
-      modified = modified.replace(
-        /Active Customers/g,
-        'Clientes Activos'
-      );
-      modified = modified.replace(
-        /Churn Rate/g,
-        'Tasa de Abandono'
-      );
-      modified = modified.replace(
-        /Monthly Goal Progress/g,
-        'Progreso de la Meta Mensual'
-      );
-      modifiedVisually = true;
-    } else if (lowerPrompt.includes('french') || lowerPrompt.includes('français') || lowerPrompt.includes('francais')) {
-      modified = modified.replace(
-        /Analytics Dashboard/g,
-        'Tableau de Bord Analytique'
-      );
-      modified = modified.replace(
-        /Real-time SaaS Performance Overview/g,
-        'Aperçu des Performances SaaS en Temps Réel'
-      );
-      modified = modified.replace(
-        /Target Monthly Goal \(\$\):/g,
-        'Objectif Mensuel ($):'
-      );
-      modifiedVisually = true;
-    }
-
-    // 2. Title modification
-    if (lowerPrompt.includes('title') || lowerPrompt.includes('header') || lowerPrompt.includes('name')) {
-      let newTitle = 'Customized SaaS Dashboard';
-      const toMatch = userPrompt.match(/to\s+["']?([^"'\n]+)["']?/i);
-      const quotesMatch = userPrompt.match(/["']([^"'\n]+)["']/);
-      if (quotesMatch) {
-        newTitle = quotesMatch[1];
-      } else if (toMatch) {
-        newTitle = toMatch[1];
-      }
-      modified = modified.replace(
-        /Analytics Dashboard/g,
-        newTitle
-      );
-      modifiedVisually = true;
-    }
-
-    // 3. Theme/Color modification
-    if (lowerPrompt.includes('dark') || lowerPrompt.includes('color') || lowerPrompt.includes('theme') || lowerPrompt.includes('black')) {
-      modified = modified.replace(
-        /background:\s*'#F5F5F7'/g,
-        "background: '#1D1D1F'"
-      );
-      modified = modified.replace(
-        /color:\s*'#1D1D1F'/g,
-        "color: '#F5F5F7'"
-      );
-      modifiedVisually = true;
-    }
-
-    // 4. Target/Goal/Metric modification
-    if (lowerPrompt.includes('goal') || lowerPrompt.includes('metric') || lowerPrompt.includes('target')) {
-      const numberMatch = userPrompt.match(/\d+/);
-      if (numberMatch) {
-        const newVal = numberMatch[0];
-        modified = modified.replace(
-          /metricValue\s*=\s*'1000'/g,
-          `metricValue = '${newVal}'`
-        );
-        modifiedVisually = true;
-      }
-    }
-
-    // Default Fallback: Append a comment to the component to simulate a modification
-    if (!modifiedVisually && modified === componentCode) {
-      modified = modified.replace(
-        /export default/g,
-        `// Modified: ${userPrompt.replace(/\n/g, ' ')}\nexport default`
-      );
-    }
-
-    return modified;
+  } catch (err: unknown) {
+    // Re-throw as a structured error so the sandbox route surfaces a clear
+    // failure to the frontend. All modifications require a live AI connection.
+    const cause = err instanceof Error ? err.message : String(err);
+    throw new Error(
+      `AI service unavailable: ${cause}. ` +
+      `Set OPENROUTER_API_KEY (or PI_AI_PROVIDER plus its matching key) in backend/.env.`
+    );
   }
 }

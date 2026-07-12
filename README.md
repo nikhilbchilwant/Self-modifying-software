@@ -27,7 +27,18 @@ cd ../frontend
 npm install
 ```
 
-### 2. Running the Servers
+### 2. Configure AI Credentials
+Copy the backend environment template and set your OpenRouter key:
+
+```bash
+cd backend
+cp .env.example .env
+# Edit .env and set OPENROUTER_API_KEY=your_openrouter_api_key_here
+```
+
+The demo defaults to `PI_AI_PROVIDER=openrouter` and `PI_AI_MODEL=tencent/hy3:free`.
+
+### 3. Running the Servers
 Start both servers in development mode:
 
 ```bash
@@ -71,16 +82,12 @@ npx tsx C:\Users\Nikhil\.gemini\antigravity-cli\brain\6efa737d-b5de-4176-8637-53
 
 ---
 
-## 🧠 Pi AI Integration and Fallback System
+## 🧠 Pi AI Integration
 
-The backend connects to `@earendil-works/pi-ai` and targets Google Gemini (`gemini-flash-latest`). 
+The backend connects to `@earendil-works/pi-ai` and defaults to OpenRouter using `tencent/hy3:free`. Provider, model, and API key are configured through `backend/.env` (copy `backend/.env.example` first).
 
-### Handling Missing API Credentials
-If the local environment lacks `GEMINI_API_KEY`, the application fails gracefully using **robust visual fallback rules** in `backend/src/services/ai.ts`. This allows full QA testing of user requests without requiring active API keys:
-- **Language changes** (e.g., *Change language to Spanish*): Translates the entire SaaS Dashboard headings, goals, and metrics into Spanish or French.
-- **Title changes** (e.g., *Change title to SaaS Dashboard*): Replaces the primary header text with the requested string.
-- **Theme/Color changes** (e.g., *Dark mode*): Switches background colors dynamically to dark-mode.
-- **Target Goals** (e.g., *Set target to 5000*): Alters the progress calculation metric value dynamically.
+### Live AI Connection Required
+All sandbox modifications depend on a live LLM call. Configure `OPENROUTER_API_KEY` in `backend/.env` before running the sandbox. You can override `PI_AI_PROVIDER` and `PI_AI_MODEL` for another provider/model if needed; keep real keys out of git.
 
 ---
 
@@ -94,7 +101,7 @@ If the local environment lacks `GEMINI_API_KEY`, the application fails gracefull
 │   │   │   └── feedback.ts       # Feedback ingestion route
 │   │   ├── services/
 │   │   │   ├── sandbox.ts        # Creation and deletion files
-│   │   │   └── ai.ts             # LLM SDK + visual fallback rules
+│   │   │   └── ai.ts             # LLM SDK integration (requires live provider)
 │   │   └── utils/
 │   │       ├── compiler.ts       # Live ts.createProgram compiler validation
 │   │       └── fileStore.ts      # Writes diffs and png screenshots to disk

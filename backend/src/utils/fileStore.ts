@@ -23,7 +23,7 @@ export async function saveFeedback(
   await fs.mkdir(FEEDBACK_DIR, { recursive: true });
 
   // Generate request ID
-  const isTest = sessionId.startsWith('test');
+  const isTest = process.env.NODE_ENV === 'test';
   const requestId = isTest ? `test-request-${uuidv4()}` : `request-${uuidv4()}`;
 
   // Process PNG screenshot

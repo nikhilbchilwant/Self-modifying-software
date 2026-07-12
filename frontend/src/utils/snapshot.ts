@@ -10,37 +10,11 @@ export async function captureScreenshot(selector: string = 'body'): Promise<stri
   return canvas.toDataURL('image/png');
 }
 
-export function calculateDiff(original: string, modified: string): string {
-  const originalLines = original.split('\n');
-  const modifiedLines = modified.split('\n');
-  let diff = '--- production\n+++ sandbox\n';
-  
-  const max = Math.max(originalLines.length, modifiedLines.length);
-  for (let i = 0; i < max; i++) {
-    const orig = originalLines[i];
-    const mod = modifiedLines[i];
-    
-    if (orig !== mod) {
-      if (orig !== undefined) {
-        diff += `- ${orig}\n`;
-      }
-      if (mod !== undefined) {
-        diff += `+ ${mod}\n`;
-      }
-    } else {
-      if (orig !== undefined) {
-        diff += `  ${orig}\n`;
-      }
-    }
-  }
-  return diff;
-}
 
 export async function sendFeedback(
   sessionId: string,
   userPrompt: string,
-  screenshot: string,
-  diffContent: string
+  screenshot: string
 ): Promise<{ success: boolean; requestId?: string; error?: string }> {
   try {
     const response = await fetch('/api/feedback', {
@@ -52,7 +26,6 @@ export async function sendFeedback(
         sessionId,
         userPrompt,
         screenshot,
-        diffContent,
       }),
     });
     

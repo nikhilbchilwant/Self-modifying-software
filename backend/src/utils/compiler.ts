@@ -9,7 +9,8 @@ export function verifyTypeScriptCode(filePath: string): string | null {
   const program = ts.createProgram([filePath], {
     noEmit: true,
     target: ts.ScriptTarget.ES2022,
-    module: ts.ModuleKind.CommonJS,
+    module: ts.ModuleKind.NodeNext,
+    moduleResolution: ts.ModuleResolutionKind.NodeNext,
     jsx: ts.JsxEmit.ReactJSX,
     esModuleInterop: true,
     skipLibCheck: true,
