@@ -10,11 +10,8 @@ The demo is intentionally narrow. It does not let AI rewrite the whole system. I
 
 In this repo, the production dashboard lives at `frontend/src/components/Dashboard.tsx`. Sandbox mode creates a temporary copy at `frontend/src/components/Dashboard.sandbox.tsx`. Prompts are sent to an Express/TypeScript backend, which uses Pi AI (`@earendil-works/pi-ai`) to generate updated TSX. If the generated component passes verification, the sandbox file is updated and the browser reflects the change immediately. If it does not, the change is rejected or reverted. Feedback is stored locally under `.specify/feedback/` as PNG and JSON artifacts.
 
-## Demo video
-
-<video controls width="100%" src="demo/demo_sandbox_demo.mp4">
-  Your browser does not support the video tag.
-</video>
+## Demo
+![Demo](https://github.com/nikhilbchilwant/Self-modifying-software/blob/001-creator-sandbox/demo/demo_sandbox_demo.gif?raw=true)
 
 ## Architecture at a glance
 
